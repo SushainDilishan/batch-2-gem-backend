@@ -24,4 +24,31 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateResource(DuplicateResourceException ex
+            , HttpServletRequest request) {
+
+        ApiErrorResponse errorResponse =  ApiErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error("Duplicate Resource")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+
+    }
+
+    @ExceptionHandler(GemNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleGemNotFound(DuplicateResourceException ex
+            , HttpServletRequest request) {
+
+        ApiErrorResponse errorResponse =  ApiErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
+    }
 }
