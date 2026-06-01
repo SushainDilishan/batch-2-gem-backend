@@ -4,6 +4,7 @@ import com.srilankagem.gembackend.common.exception.ResourceNotFoundException;
 import com.srilankagem.gembackend.gem.dto.GemStoneRequest;
 import com.srilankagem.gembackend.gem.dto.GemStoneResponse;
 import com.srilankagem.gembackend.gem.models.GemStone;
+import com.srilankagem.gembackend.gem.models.Tag;
 import com.srilankagem.gembackend.gem.repository.GemStoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class GemStoneService {
 
     private final GemStoneRepository gemStoneRepository;
+    private final TagService tagService;
 
     public Page<GemStoneResponse> getAllGemStones(Pageable pageable) {
         return gemStoneRepository.findByActiveTrue(pageable).map(item -> toResponse(item));
@@ -36,6 +38,16 @@ public class GemStoneService {
                 .build();
 
         return toResponse(gemStoneRepository.save(gemStone));
+    }
+
+    public GemStoneResponse addTagToGemStone(Long gemId, Long tagId) {
+        GemStone gemStone = gemStoneRepository.findById(tagId).orElseThrow(() ->
+                new ResourceNotFoundException(gemId.toString(), "Resource not found"));
+
+        Tag tag = tagService.getTagEntityById(tagId);
+        gemStone.getTags().add(tag);
+        return toResponse(gemStoneRepository.save(gemStone));
+
     }
 
     public GemStoneResponse getGemStoneById(Long id) throws ResourceNotFoundException {
