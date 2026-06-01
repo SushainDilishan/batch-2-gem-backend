@@ -1,5 +1,6 @@
 package com.srilankagem.gembackend.trade.entity;
 
+import com.srilankagem.gembackend.dealer.entity.Dealer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +29,11 @@ public class Trade {
     @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<TradeItem> items = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dealer_id", nullable = false)
+    private Dealer dealer;
+
 
     @Column(nullable = false)
     @Builder.Default
