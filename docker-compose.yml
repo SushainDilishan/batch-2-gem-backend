@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: gemdb
+      POSTGRES_USER: gem
+      POSTGRES_PASSWORD: gem123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  gem-trading:
+    build: .
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gemdb
+      SPRING_DATASOURCE_USERNAME: gem
+      SPRING_DATASOURCE_PASSWORD: gem123
+
+volumes:
+  pgdata:
